@@ -1,0 +1,8 @@
+.hang{
+    padding-left: 700px;
+    padding-top: 200px;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    height: 200px;
+}
