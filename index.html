@@ -1,21 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-     <link rel="stylesheet" href="/hangman/index.css"/>
+    <meta name="theme-color" content="#111827">
+    <title>Үг таагаарай · Hangman</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./index.css">
 </head>
 <body>
-  
-    <div id="hangman-container">
-      <img src="./0.jpg" id="images"/>
-      <div id="random-word"> </div>
-      <div id="alphabet"></div>
-      <div id="wrong"></div>
-      <button id="resgame">Play again</button>
-    </div>
-  
+    <main class="game-shell">
+        <header class="topbar">
+            <a class="brand" href="#" aria-label="Үг таагаарай нүүр хуудас"><span class="brand-mark">?</span><span>үг<span class="brand-accent">.</span>таа</span></a>
+            <div class="topbar-note"><span class="live-dot"></span> Үгийн сангаа сорь</div>
+        </header>
+
+        <section class="game-card" aria-labelledby="game-title">
+            <div class="intro">
+                <div class="eyebrow"><span>✦</span> ҮГЭН ТОГЛООМ</div>
+                <h1 id="game-title">Нууц үгийг <span>таагаарай</span></h1>
+                <p>Үсгүүдийг сонгож, нуугдсан үгийг олоорой.</p>
+            </div>
+
+            <div class="game-content">
+                <section class="illustration-panel" aria-label="Тоглоомын явц">
+                    <div class="panel-top"><span>ТОГЛООМЫН ЯВЦ</span><span class="round-badge">ROUND 01</span></div>
+                    <div class="image-wrap"><img src="./0.jpg" id="images" alt="Дүүжлүүрийн зураг — алдааны тоогоор өөрчлөгдөнө"></div>
+                    <div class="mistakes"><span class="mistakes-icon">♡</span><span id="wrong">Алдаа</span><span class="mistakes-limit">/ 7</span></div>
+                    <div class="progress-track" aria-hidden="true"><div id="progress-fill"></div></div>
+                </section>
+
+                <section class="play-panel" aria-label="Үсэг таах хэсэг">
+                    <div class="word-heading"><span>НУУЦ ҮГ</span><span class="word-hint">Үсэг сонгоод таагаарай</span></div>
+                    <div id="random-word" class="word-display" aria-live="polite"></div>
+                    <div class="keyboard-heading"><span>ҮСГЭЭ СОНГО</span><span class="keyboard-hint">A—Z</span></div>
+                    <div id="alphabet" class="alphabet" aria-label="Англи цагаан толгой"></div>
+                    <div id="game-message" class="game-message" aria-live="polite">Амжилт хүсье! 🍀</div>
+                    <button id="resgame" class="reset-button" type="button"><span>↻</span> Дахин тоглох</button>
+                </section>
+            </div>
+            <footer class="card-footer"><span>ТАЙВАН БОДООД, ЗӨВ ҮСГЭЭ ОЛООРОЙ</span><span class="footer-star">✳</span></footer>
+        </section>
+        <div class="page-caption">Жаахан аз, жаахан логик — тэгээд л боллоо.</div>
+    </main>
+    <script src="./index.js"></script>
 </body>
-<script src="./index.js"></script>
 </html>

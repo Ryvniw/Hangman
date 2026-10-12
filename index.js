@@ -1,76 +1,87 @@
-const hangman = document.getElementById('hangman-container')
-const randomword = document.getElementById('random-word')
 const alphabet = document.getElementById('alphabet')
-const wrong = document.getElementById('wrong')
-const hangmanimg=document.getElementById('images')
-const resbutton=document.getElementById('resgame')
+const wordDisplay = document.getElementById('random-word')
+const wrongDisplay = document.getElementById('wrong')
+const hangmanImage = document.getElementById('images')
+const progressFill = document.getElementById('progress-fill')
+const message = document.getElementById('game-message')
+const resetButton = document.getElementById('resgame')
 
-hangman.classList.add('hang')
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+const words = ['pinecone', 'anime', 'game', 'music', 'money']
+const maxMistakes = 7
+let word = ''
+let guessed = new Set()
+let mistakes = 0
+let finished = false
 
-
-const usegnuud = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-const words = ['pinecone', 'anime', 'game', 'music', 'money'];
-let clickedletter = []
-
-  let fail = 0
-  function islose(){
-    if(fail===7){
-        alert('lost')
-        const lostel=document.createElement('div')
-        lostel.innerHTML='lost'
-        hangman.appendChild(lostel)
-    }
-  }
-  function iswin(){
-    if(randomword.innerHTML.toLowerCase()===word.toLowerCase()){
-        alert('win')
-    }
-  }
-for (let i = 0; i < usegnuud.length; i++) {
-    const usegbutton = document.createElement('button')
-    usegbutton.innerHTML = usegnuud[i]
-    alphabet.appendChild(usegbutton)
-
-  
-    usegbutton.addEventListener('click', function () {
-        usegbutton.disabled=true
-        clickedletter.push(usegnuud[i])
-        let displayletter = "";
-
-
-        if (word.toUpperCase().includes(usegnuud[i]) === false) {
-            fail ++
-            wrong.innerHTML = `Fail: ${fail}`
-            hangmanimg.src= fail +'.jpg'
-        }
-        islose()
-
-        for (let j = 0; j < word.length; j++) {
-            if (clickedletter.includes(word[j].toUpperCase())) {
-                displayletter = displayletter + word[j];
-                randomword.innerHTML = displayletter;
-            } else {
-                displayletter = displayletter + '_ ';
-                randomword.innerHTML = displayletter;
-            }
-        }
-        console.log(displayletter)
-        iswin()
-    })
-}
-const randomnumber = Math.floor(Math.random() * words.length)
-const word = words[randomnumber]
-if(fail>=6){
-    alert("you lose" +word)
-    
+function chooseWord() {
+  return words[Math.floor(Math.random() * words.length)].toUpperCase()
 }
 
-let display = ''
-for (let i = 0; i < word.length; i++) {
-    display = display + '_ '
-} randomword.innerHTML = display
+function renderWord() {
+  wordDisplay.replaceChildren(...word.split('').map(letter => {
+    const tile = document.createElement('span')
+    const found = guessed.has(letter)
+    tile.className = `word-letter${found ? ' found' : ''}`
+    tile.textContent = found ? letter : ''
+    tile.setAttribute('aria-label', found ? letter : 'нууц үсэг')
+    return tile
+  }))
+}
 
-resbutton.addEventListener('click', function(){
-    window.location.reload()
-})
+function finish(won) {
+  finished = true
+  message.className = `game-message ${won ? 'win' : 'lose'}`
+  message.textContent = won ? 'Яг зөв! Чи нууц үгийг оллоо 🎉' : `Энэ удаа биш ээ — нууц үг ${word} байлаа.`
+  alphabet.querySelectorAll('button').forEach(button => { button.disabled = true })
+}
 
+function guess(letter, button) {
+  if (finished || guessed.has(letter)) return
+  guessed.add(letter)
+  button.disabled = true
+
+  if (word.includes(letter)) {
+    button.classList.add('correct')
+  } else {
+    mistakes += 1
+    button.classList.add('incorrect')
+    hangmanImage.src = `./${mistakes}.jpg`
+    hangmanImage.alt = `Дүүжлүүрийн зураг — ${mistakes} алдаа`
+  }
+
+  wrongDisplay.textContent = `Алдаа ${mistakes}`
+  progressFill.style.width = `${(mistakes / maxMistakes) * 100}%`
+  renderWord()
+
+  if ([...word].every(character => guessed.has(character))) finish(true)
+  else if (mistakes >= maxMistakes) finish(false)
+}
+
+function startGame() {
+  word = chooseWord()
+  guessed = new Set()
+  mistakes = 0
+  finished = false
+  alphabet.replaceChildren()
+  wrongDisplay.textContent = 'Алдаа 0'
+  progressFill.style.width = '0%'
+  hangmanImage.src = './0.jpg'
+  hangmanImage.alt = 'Дүүжлүүрийн зураг — алдааны тоогоор өөрчлөгдөнө'
+  message.className = 'game-message'
+  message.textContent = 'Амжилт хүсье! 🍀'
+
+  letters.forEach(letter => {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.textContent = letter
+    button.setAttribute('aria-label', `${letter} үсгийг сонгох`)
+    button.addEventListener('click', () => guess(letter, button))
+    alphabet.appendChild(button)
+  })
+
+  renderWord()
+}
+
+resetButton.addEventListener('click', startGame)
+startGame()
